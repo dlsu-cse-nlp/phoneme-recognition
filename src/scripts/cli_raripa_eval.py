@@ -37,7 +37,7 @@ selected_mode = questionary.select(
     "Choose a mode:", choices=["ce-only", "ctc-only", "combined"], use_indicator=True
 ).ask()
 
-if not selected_dataset:
+if not selected_mode:
     print("Cancelled by user.")
     sys.exit(0)
 

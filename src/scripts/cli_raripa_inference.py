@@ -33,16 +33,36 @@ if not selected_wav:
     print("Cancelled by user.")
     sys.exit(0)
 
+attention = questionary.confirm("Map cross-attention?").ask()
+
+if attention:
+    script = "src.scripts.raripa_attention_maps"
+else:
+    script = "src.scripts.raripa_inference"
+
+
+# Prompt user to select a mode
+selected_mode = questionary.select(
+    "Choose a mode:", choices=["ce-only", "ctc-only", "combined"], use_indicator=True
+).ask()
+
+if not selected_mode:
+    print("Cancelled by user.")
+    sys.exit(0)
+
+
 cmd = [
     "uv",
     "run",
     "python3",
     "-m",
-    "src.scripts.raripa_inference",
+    script,
     "--checkpoint-path",
     selected_checkpoint,
     "--wav-path",
     selected_wav,
+    "--mode",
+    selected_mode,
 ]
 print(f"\nRunning command: {' '.join(cmd)}\n")
 subprocess.run(cmd, check=True)
