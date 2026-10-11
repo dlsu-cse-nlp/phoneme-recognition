@@ -79,8 +79,8 @@ training_args = Seq2SeqTrainingArguments(
     # fp16=True,
     # --------------------------------------------
     # Effective batch size: 8 * 2 = 16
-    per_device_train_batch_size=2,
-    gradient_accumulation_steps=8,
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=16,
     # --------------------------------------------
     # TODO: Hyperparameter tuning
     # learning_rate=1e-4,
