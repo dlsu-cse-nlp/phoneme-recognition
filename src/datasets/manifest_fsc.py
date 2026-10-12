@@ -109,14 +109,14 @@ def process_parquet_dataset(directory_path):
     return train_data, test_data
 
 
-BASE_DIR = "data/filipinospeechcorpus/data"
+BASE_DIR = "data/fsc/parquet"
 train_data, test_data = process_parquet_dataset(BASE_DIR)
 
 if not train_data.empty:
     print("\nSplitting train dataset 90/10 into train/dev...")
     train_df, dev_df = train_test_split(train_data, test_size=0.10, random_state=42)
 
-    output_path = Path(BASE_DIR)
+    output_path = Path("data/fsc")
     train_df.to_json(output_path / "train_manifest.json", orient="records", lines=True)
     dev_df.to_json(output_path / "valid_manifest.json", orient="records", lines=True)
 

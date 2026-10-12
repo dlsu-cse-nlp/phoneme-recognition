@@ -22,7 +22,7 @@ def _load_fsc(path):
 
     if parquet_file not in _parquet_cache:
         _parquet_cache[parquet_file] = pd.read_parquet(
-            "data/filipinospeechcorpus/data/" + parquet_file
+            "data/fsc/parquet/" + parquet_file
         )
 
     idx = int(sample_key.removeprefix("sample_").removesuffix(".wav"))

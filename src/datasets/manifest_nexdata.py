@@ -79,8 +79,8 @@ def make_manifest(_directory):
 
 data = pd.concat(
     [
-        make_manifest("data/nexdata/filipino_822/G00001"),
-        make_manifest("data/nexdata/filipino_822/G00608"),
+        make_manifest("data/nexdata/audio/G00001"),
+        make_manifest("data/nexdata/audio/G00608"),
     ]
 )
 train_test_val_split(data, "data/nexdata/filipino_822/")

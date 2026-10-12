@@ -76,7 +76,7 @@ def process_split(split_name, data_split, tsv_directory):
 
 
 def main():
-    tsv_directory = Path("data/google/fleurs/fil_ph/")
+    tsv_directory = Path("data/fleurs/")
 
     all_data = []
 
