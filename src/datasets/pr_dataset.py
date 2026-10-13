@@ -16,14 +16,12 @@ TARGET_SR = 16000
 _parquet_cache: dict[str, pd.DataFrame] = {}
 
 
-def _load_fsc(path):
-    """Used when loading a parquet file, as is the case with FSC"""
-    parquet_file, sample_key = path.removeprefix("fsc://").rsplit("/", 1)
+def _load_parquet(path):
+    """Used when loading (and caching) a parquet file"""
+    parquet_file, sample_key = path.rsplit("/", 1)
 
     if parquet_file not in _parquet_cache:
-        _parquet_cache[parquet_file] = pd.read_parquet(
-            "data/fsc/parquet/" + parquet_file
-        )
+        _parquet_cache[parquet_file] = pd.read_parquet(parquet_file)
 
     idx = int(sample_key.removeprefix("sample_").removesuffix(".wav"))
     audio_bytes = _parquet_cache[parquet_file].loc[idx, "audio"]["bytes"]
@@ -50,9 +48,7 @@ class PhonemeDataset(Dataset):
         sample = self.samples[idx]
         path = sample["audio_filepath"]
 
-        # TODO: Added a custom prefix for the FSC dataset, but this is probably
-        # really clunky so we should figure out a better way. Works for now.
-        load_fn = _load_fsc if path.startswith("fsc://") else torchaudio.load
+        load_fn = _load_parquet if "parquet" in path else torchaudio.load
         waveform, sr = load_fn(path)
 
         # Downsample to target sample rate

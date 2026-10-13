@@ -64,7 +64,7 @@ def process_parquet_dataset(directory_path):
         combined = pd.concat(frames, ignore_index=True)
 
         all_audio_paths = [
-            f"fsc://{row['_source']}/sample_{int(row['_local_idx']):06d}.wav"
+            f"data/fsc/parquet/{row['_source']}/sample_{int(row['_local_idx']):06d}.wav"
             for _, row in combined.iterrows()
         ]
         all_durations = combined["duration"].tolist()
