@@ -115,10 +115,12 @@ git clone https://github.com/dlsu-cse-nlp/phoneme-recognition.git
 ### Upload data
 
 Run the following at the repository root to copy data to HPC with `rsync`:
+Ensure you create the `models/g2p/` directory on HPC first.
 
 ```bash
-D=[COARE USERNAME]:/scratch1/lorenz.marqueses/phoneme-recognition/data
-rsync -avhP data/fleurs/audio/  $D/fleurs/audio/
-rsync -avhP data/fsc/parquet/   $D/fsc/parquet/
-rsync -avhP data/nexdata/audio/ $D/nexdata/audio/
+D=[COARE USERNAME]:/scratch1/lorenz.marqueses/phoneme-recognition
+rsync -avhP data/fleurs/audio/  $D/data/fleurs/audio/
+rsync -avhP data/fsc/parquet/   $D/data/fsc/parquet/
+rsync -avhP data/nexdata/audio/ $D/data/nexdata/audio/
+rsync -avhP models/g2p/         $D/models/g2p/
 ```
