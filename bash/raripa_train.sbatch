@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=lorenz.marqueses@saliksik.asti.dost.gov.ph
+#SBATCH --account=dlsu-ilao-group-2
 #SBATCH --partition=gpu_a100
 #SBATCH --qos=gpu-a100_default
 #SBATCH --gres=gpu:1
