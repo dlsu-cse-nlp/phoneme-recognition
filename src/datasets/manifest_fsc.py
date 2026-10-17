@@ -1,3 +1,7 @@
+# TODO: Cleanup
+# NOTE: Running this is not strictly necessary since the manifest files are
+# already pushed to the repository
+
 """
 This script creates three files, test_manifest.json, train_manifest.json, and
 valid_manifest.json, in the data/filipinospeechcorpus/data directory.

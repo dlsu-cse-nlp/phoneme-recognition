@@ -1,3 +1,7 @@
+# TODO: Cleanup
+# NOTE: Running this is not strictly necessary since the manifest files are
+# already pushed to the repository
+
 import gc
 import os
 from pathlib import Path
