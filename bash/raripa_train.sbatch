@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=<your_slurm_account>
+#SBATCH --account=lorenz.marqueses@saliksik.asti.dost.gov.ph
 #SBATCH --partition=gpu_a100
 #SBATCH --qos=gpu-a100_default
 #SBATCH --gres=gpu:1
