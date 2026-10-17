@@ -30,3 +30,32 @@ research project.
 > model and evaluating its performance on baseline datasets; and (3) evaluating
 > its performance on a downstream task, namely mispronunciation detection and
 > diagnosis (MD\&D).
+
+## Data directory
+
+```
+data
+├── fleurs
+│   ├── audio
+│   │   ├── dev
+│   │   ├── test
+│   │   └── train
+│   ├── dev.tsv
+│   ├── test_manifest.json
+│   ├── test.tsv
+│   ├── train_manifest.json
+│   ├── train.tsv
+│   └── valid_manifest.json
+├── fsc
+│   ├── parquet
+│   ├── test_manifest.json
+│   ├── train_manifest.json
+│   └── valid_manifest.json
+└── nexdata
+    ├── audio
+│   │   ├── G00001
+│   │   └── G00608
+    ├── test_manifest.json
+    ├── train_manifest.json
+    └── valid_manifest.json
+```
