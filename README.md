@@ -105,17 +105,17 @@ Your SCRATCH quotas:
 In case something goes wrong, our current setup on HPC can be reproduced as
 follows:
 
-### Clone into `/scratch`
+### Cloning this repository into `/scratch`
 
 ```bash
 cd ~/scratch1
 git clone https://github.com/dlsu-cse-nlp/phoneme-recognition.git
 ```
 
-### Upload data
+### Uploading datasets
 
-Run the following at the repository root to copy data to HPC with `rsync`:
-Ensure you create the `models/g2p/` directory on HPC first.
+Run the following at the repository root to copy data to HPC with `rsync`
+(ensure you create the `models/g2p/` directory on HPC first):
 
 ```bash
 D=[COARE USERNAME]:/scratch1/lorenz.marqueses/phoneme-recognition
@@ -124,3 +124,31 @@ rsync -avhP data/fsc/parquet/   $D/data/fsc/parquet/
 rsync -avhP data/nexdata/audio/ $D/data/nexdata/audio/
 rsync -avhP models/g2p/         $D/models/g2p/
 ```
+
+### Installing `uv` on an HPC compute node
+
+COARE provides a module for `conda`, but since I prefer using `uv` and they
+permit installing tools anyway, see below for how to install it on HPC:
+
+```bash
+salloc --partition=debug --qos=debug_default --nodes=1 --ntasks=4 --time=01:00:00
+srun --pty /bin/bash
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH=$HOME/.local/bin:$PATH
+export UV_CACHE_DIR=/scratch1/lorenz.marqueses/uv_cache
+export HF_HOME=/scratch1/lorenz.marqueses/hf_cache
+```
+
+From here, you can now `uv sync` in the repository:
+
+```bash
+cd ~/scratch1/phoneme-recognition
+uv sync --frozen
+```
+
+Call `exit` twice to leave the `srun` shell and to release the `salloc`.
+
+> [!NOTE]
+> You will need to run the environmment variable `export`s every time you login
+> to a new interactive session.
