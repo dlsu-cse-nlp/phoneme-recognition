@@ -30,6 +30,7 @@ parser.add_argument("--valid-manifest-path", default=VALID_MANIFEST)
 parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
 parser.add_argument("--ctc-checkpoint-path", default=None)
 parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
+parser.add_argument("--description", default=None)
 args = parser.parse_args()
 
 tokenizer = AutoTokenizer.from_pretrained(DEFAULT_MODEL_ID)
@@ -73,14 +74,15 @@ def compute_metrics(eval_preds):
 
 
 training_args = Seq2SeqTrainingArguments(
-    output_dir=f"./models/checkpoints/{run_id}_raripa",
+    output_dir=f"./models/checkpoints/{run_id}_raripa_{args.description}",
     bf16=True,
     optim="adamw_torch",
     # fp16=True,
     # --------------------------------------------
-    # Effective batch size: 8 * 2 = 16
-    per_device_train_batch_size=1,
-    gradient_accumulation_steps=16,
+    # Effective batch size: 8 * 2 = 16 on 4060
+    # 16 * 1 = 16 on COARE HPC (TODO: Test this)
+    per_device_train_batch_size=16,
+    gradient_accumulation_steps=1,
     # --------------------------------------------
     # TODO: Hyperparameter tuning
     # learning_rate=1e-4,
@@ -100,6 +102,11 @@ training_args = Seq2SeqTrainingArguments(
     metric_for_best_model="cer" if args.mode != "ctc-only" else "loss",
     greater_is_better=False,
     remove_unused_columns=False,
+    # --------------------------------------------
+    # TODO: Test these on COARE HPC
+    dataloader_num_workers=8,
+    dataloader_pin_memory=True,
+    dataloader_persistent_workers=True,
 )
 
 # TODO: Can use grouped parameters to control LR...?
