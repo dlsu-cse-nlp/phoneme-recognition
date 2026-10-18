@@ -16,6 +16,7 @@ set -euo pipefail
 export PATH=$HOME/.local/bin:$PATH
 export UV_CACHE_DIR=/scratch1/lorenz.marqueses/uv_cache
 export HF_HOME=/scratch1/lorenz.marqueses/hf_cache
+export LD_LIBRARY_PATH=/scratch1/lorenz.marqueses/envs/ffmpeg/lib:${LD_LIBRARY_PATH:-}
 export PYTHONUNBUFFERED=1
 [ "${OFFLINE:-0}" = "1" ] && export HF_HUB_OFFLINE=1
 
