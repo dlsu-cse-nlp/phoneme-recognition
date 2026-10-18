@@ -125,6 +125,15 @@ rsync -avhP data/nexdata/audio/ $D/data/nexdata/audio/
 rsync -avhP models/g2p/         $D/models/g2p/
 ```
 
+The repository clone on HPC only has Git LFS pointers to the manifest files, so
+also `rsync` those from your machine:
+
+```bash
+rsync -avhP data/fleurs/*_manifest.json $D/data/fleurs/
+rsync -avhP data/fsc/*_manifest.json    $D/data/fsc/
+rsync -avhP data/nexdata/*_manifest.json $D/data/nexdata/
+```
+
 ### Installing `uv` on an HPC compute node
 
 COARE provides a module for `conda`, but since I prefer using `uv` and they

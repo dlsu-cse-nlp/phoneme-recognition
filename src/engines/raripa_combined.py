@@ -55,7 +55,7 @@ class RARIPACombined(RARIPA):
             )
 
             ce_loss = outputs.loss
-            print(f"CE: {ce_loss}; CTC: {ctc_loss}")
+            # print(f"CE: {ce_loss}; CTC: {ctc_loss}")
 
             outputs.loss = (self.ctc_weight * ctc_loss) + (
                 (1 - self.ctc_weight) * ce_loss
