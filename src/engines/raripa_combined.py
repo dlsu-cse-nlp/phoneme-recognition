@@ -63,21 +63,18 @@ class RARIPACombined(RARIPA):
 
         return outputs
 
-    def generate(
-        self, audio_values, attention_mask=None, ctc_weight=0.3, num_beams=5, **kwargs
-    ):
+    def generate(self, audio_values, attention_mask=None, ctc_weight=0.3, **kwargs):
         projected, mask, projected_lengths, encoder_out, feat_lengths = (
             self._get_projected(audio_values, attention_mask)
         )
-
         batch_size = audio_values.size(0)
 
+        num_beams = kwargs.get("num_beams", self.byt5.generation_config.num_beams)
         num_return = kwargs.pop("num_return_sequences", num_beams)
 
         gen_out = self.byt5.generate(
             encoder_outputs=BaseModelOutput(last_hidden_state=projected),
             attention_mask=mask,
-            num_beams=num_beams,
             num_return_sequences=num_return,
             output_scores=True,
             return_dict_in_generate=True,
@@ -99,14 +96,7 @@ class RARIPACombined(RARIPA):
         targets = sequences
         if targets.size(1) > 0:
             starts_with_pad = targets[:, 0] == self.config.pad_token_id
-            if starts_with_pad.all():
-                targets = targets[:, 1:]
-            elif starts_with_pad.any():
-                raise RuntimeError(
-                    "Inconsistent decoder start tokens across generated "
-                    "sequences; refusing to strip a single leading column "
-                    "since that would misalign some hypotheses."
-                )
+            targets = targets[:, 1:]
 
         target_lengths = (targets != self.config.pad_token_id).sum(dim=-1).clamp(min=1)
 

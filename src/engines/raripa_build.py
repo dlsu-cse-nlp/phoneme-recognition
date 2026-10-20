@@ -19,11 +19,6 @@ def build_model(checkpoint_path=None, mode="ce-only"):
 
     # TODO: Investigate max length and beam search more
 
-    # Default generation options
-    model.generation_config.max_length = 256
-    model.generation_config.early_stopping = True
-    model.generation_config.num_beams = 4
-
     # TODO: Investigate selective freezing more
 
     # Freeze wav2vec2 encoder except for top 6 layers

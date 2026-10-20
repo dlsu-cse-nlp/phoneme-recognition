@@ -49,6 +49,16 @@ class RARIPA(nn.Module):
         self.config = self.byt5.config
         self.generation_config = self.byt5.generation_config
 
+        # Default generation options
+        # NOTE: Can be overridden by kwargs in the calling script
+        # The generate() call in engines.raripa_combined should also fall back
+        # to these if the calling inference script did not provide kwargs
+        self.generation_config.max_length = 500  # 256
+        self.generation_config.early_stopping = True
+        self.generation_config.no_repeat_ngram_size = 24
+        self.generation_config.num_beams = 5
+        self.generation_config.length_penalty = 0
+
     def _get_projected(self, audio_values, attention_mask=None):
         """Processes the inputs through the wav2vec2 encoder and the projection.
         Outputs the projected inputs ready for the ByT5 decoder.
@@ -136,6 +146,7 @@ class RARIPA(nn.Module):
         # Delegate to the forward() call in the ByT5 model bypassing its encoder
         # entirely, using our projected inputs instead. This lets us use HF's
         # optimizations
+        # NOTE: This reads from self.generation_config before adding kwargs
         return self.byt5.generate(
             encoder_outputs=BaseModelOutput(last_hidden_state=projected),
             attention_mask=mask,
