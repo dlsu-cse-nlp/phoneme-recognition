@@ -79,7 +79,7 @@ training_args = Seq2SeqTrainingArguments(
     optim="adamw_torch",
     # fp16=True,
     # --------------------------------------------
-    # Effective batch size: 8 * 2 = 16 on 4060
+    # Effective batch size: 2 * 8 = 16 on 4060
     # 16 * 1 = 16 on COARE HPC (TODO: Test this)
     per_device_train_batch_size=16,
     gradient_accumulation_steps=1,
