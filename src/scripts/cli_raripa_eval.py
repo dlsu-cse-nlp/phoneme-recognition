@@ -34,7 +34,9 @@ if not selected_dataset:
 
 # Prompt user to select a mode
 selected_mode = questionary.select(
-    "Choose a mode:", choices=["ce-only", "ctc-only", "combined"], use_indicator=True
+    "Choose a mode:",
+    choices=["ce-only", "ctc-only", "combined", "m-adapter"],
+    use_indicator=True,
 ).ask()
 
 if not selected_mode:

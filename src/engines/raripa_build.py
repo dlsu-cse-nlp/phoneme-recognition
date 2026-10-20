@@ -3,6 +3,7 @@ from safetensors.torch import load_file
 from src.engines.raripa import RARIPA
 from src.engines.raripa_combined import RARIPACombined
 from src.engines.raripa_ctc import RARIPACTC
+from src.engines.raripa_madapter import RARIPAMAdapter
 
 
 def build_model(checkpoint_path=None, mode="ce-only"):
@@ -10,6 +11,8 @@ def build_model(checkpoint_path=None, mode="ce-only"):
         model = RARIPACTC()
     elif mode == "combined":
         model = RARIPACombined()
+    elif mode == "madapter":
+        model = RARIPAMAdapter()
     else:
         model = RARIPA()
 
