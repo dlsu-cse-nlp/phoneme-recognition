@@ -161,3 +161,13 @@ Call `exit` twice to leave the `srun` shell and to release the `salloc`.
 > [!NOTE]
 > You will need to run the environmment variable `export`s every time you login
 > to a new interactive session.
+
+### Submitting SLURM jobs for training
+
+See example command below. Training is done with `bash/raripa_train.sbatch`.
+
+```bash
+MODE=combined DESC=combined_fsc TRAIN=data/fsc/train_manifest.json \
+VALID=data/fsc/valid_manifest.json TEST=data/fsc/test_manifest.json \
+sbatch --time=6:00:00 bash/raripa_train.sbatch
+```

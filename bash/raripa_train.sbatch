@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=14
+#SBATCH --cpus-per-task=7
 #SBATCH --time=3-00:00:00
 #SBATCH --job-name=raripa
 #SBATCH --output=logs/%x.%j.out
