@@ -106,9 +106,6 @@ class Metrics:
             print(f"PFER: {metrics['pfer']}")
             print(f"SPER: {metrics['sper']}")
 
-        if sentence is not None:
-            metrics["sentence"] = sentence
-
         if save:
             self.output.append(metrics)
 

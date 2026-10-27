@@ -56,6 +56,8 @@ checkpoint = questionary.select(
     use_indicator=True,
 ).ask()
 
+description = questionary.text("Enter run description").ask()
+
 # Build the command execution array for uv
 cmd = [
     "uv",
@@ -71,6 +73,8 @@ cmd = [
     valid_manifest,
     "--mode",
     mode,
+    "--description",
+    description,
 ]
 
 if checkpoint != "Train from scratch":
