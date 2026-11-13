@@ -801,6 +801,9 @@ epitran==1.35.1 \
     --hash=sha256:5928e30f511b765d2bf92e389055090054b1a3fab897f8c61784b8cd5b298bff \
     --hash=sha256:cc7aaa17126d541eb0fe091f5b9a488dcf97738e53592cb12c3951260814c112
     # via phoneme-recognition
+euporie==2.10.4 \
+    --hash=sha256:2579e5e7d43c8abe1b16acdef19e3099576523b6821850976450868758530609 \
+    --hash=sha256:e80774a0e6f081f47e84249eca18c04237169ba967609985a482e1db0101e88b
 executing==2.2.1 \
     --hash=sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4 \
     --hash=sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017
@@ -808,7 +811,9 @@ executing==2.2.1 \
 fastjsonschema==2.21.2 \
     --hash=sha256:1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463 \
     --hash=sha256:b1eb43748041c880796cd077f1a07c3d94e93ae84bba5ed36800a33554ae05de
-    # via nbformat
+    # via
+    #   euporie
+    #   nbformat
 fiddle==0.3.0 \
     --hash=sha256:5d083d3299a479868345513385a6c5546141bd92086c15d3dcbf8008a90075d3 \
     --hash=sha256:f4824541c103a94a2f33f6c93eeddf6007c3a7300440087a95907f3e74362e61
@@ -822,6 +827,10 @@ filelock==3.29.0 \
     #   python-discovery
     #   torch
     #   virtualenv
+flatlatex==0.15 \
+    --hash=sha256:4cf3ed9c1b837935fd79468ddbb25ac561325467a3a9dc050805b297eb0b25c6 \
+    --hash=sha256:5170e1bcd4fccb52bdbdff300b14b68730483bc46f6a2a89f7ae2bb024e4d139
+    # via euporie
 fonttools==4.62.1 \
     --hash=sha256:0aa72c43a601cfa9273bb1ae0518f1acadc01ee181a6fc60cd758d7fdadffc04 \
     --hash=sha256:12859ff0b47dd20f110804c3e0d0970f7b832f561630cd879969011541a464a9 \
@@ -977,11 +986,13 @@ fsspec==2024.12.0 \
     --hash=sha256:b520aed47ad9804237ff878b504267a3b0b441e97508bd6d2d8774e3db85cee2
     # via
     #   datasets
+    #   euporie
     #   huggingface-hub
     #   lightning
     #   nemo-toolkit
     #   pytorch-lightning
     #   torch
+    #   universal-pathlib
 g2p-en==2.1.0 \
     --hash=sha256:2a7aabf1fc7f270fcc3349881407988c9245173c2413debbe5432f4a4f31319f \
     --hash=sha256:32ecb119827a3b10ea8c1197276f4ea4f44070ae56cbbd01f0f261875f556a58
@@ -1152,6 +1163,10 @@ idna==3.14 \
     #   jsonschema
     #   requests
     #   yarl
+imagesize==1.5.0 \
+    --hash=sha256:32677681b3f434c2cb496f00e89c5a291247b35b1f527589909e008057da5899 \
+    --hash=sha256:8bfc5363a7f2133a89f0098451e0bcb1cd71aba4dc02bbcecb39d99d40e1b94f
+    # via euporie
 inflect==7.5.0 \
     --hash=sha256:2aea70e5e70c35d8350b8097396ec155ffd68def678c7ff97f51aa69c1d92344 \
     --hash=sha256:faf19801c3742ed5a05a8ce388e0d8fe1a07f8d095c82201eb904f5d27ad571f
@@ -1250,6 +1265,7 @@ jupyter-client==8.8.0 \
     --hash=sha256:d556811419a4f2d96c869af34e854e3f059b7cc2d6d01a9cd9c85c267691be3e \
     --hash=sha256:f93a5b99c5e23a507b773d3a1136bd6e16c67883ccdbd9a829b0bbdb98cd7d7a
     # via
+    #   euporie
     #   ipykernel
     #   jupyter-console
     #   jupyter-server
@@ -1311,6 +1327,10 @@ jupyterlab-widgets==3.0.16 \
     --hash=sha256:423da05071d55cf27a9e602216d35a3a65a3e41cdf9c5d3b643b814ce38c19e0 \
     --hash=sha256:45fa36d9c6422cf2559198e4db481aa243c7a32d9926b500781c830c80f7ecf8
     # via ipywidgets
+jupytext==1.19.6 \
+    --hash=sha256:ba1d143bb3751e054d3164376b148ee8fa74e1a860fc9411e1da93ff588b8a17 \
+    --hash=sha256:eb725d66841f1a91707bdcf4703b194a53151a060ecb3fd31d78139cc9ec090a
+    # via euporie
 kaldi-python-io==1.2.2 \
     --hash=sha256:4ebb4029c6c58296cc0abf96edff02832ba341d290ed37624a8d00105f0f7c00
     # via nemo-toolkit
@@ -1575,6 +1595,10 @@ lightning-utilities==0.15.3 \
     #   lightning
     #   pytorch-lightning
     #   torchmetrics
+linkify-it-py==2.2.0 \
+    --hash=sha256:3adc40eb5af300b2605fcfdb968c24e1d780a90f1f2221af7c15e5111e94d443 \
+    --hash=sha256:907acd2d17ac1fbb9ddb62c8957ccbd6158cac602231a15c3b0cd1e215f03cee
+    # via euporie
 llvmlite==0.44.0 \
     --hash=sha256:07667d66a5d150abed9157ab6c0b9393c9356f229784a4385c02f99e94fc94d4 \
     --hash=sha256:1d671a56acf725bf1b531d5ef76b86660a5ab8ef19bb6a46064a705c6ca80aad \
@@ -1662,10 +1686,14 @@ markdown==3.10.2 \
     --hash=sha256:994d51325d25ad8aa7ce4ebaec003febcce822c3f8c911e3b17c52f7f589f950 \
     --hash=sha256:e91464b71ae3ee7afd3017d9f358ef0baf158fd9a298db92f1d4761133824c36
     # via tensorboard
-markdown-it-py==4.2.0 \
-    --hash=sha256:04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49 \
-    --hash=sha256:9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a
-    # via rich
+markdown-it-py==3.0.0 \
+    --hash=sha256:355216845c60bd96232cd8d8c40e8f9765cc86f46880e43a8fd22dc1a1a8cab1 \
+    --hash=sha256:e3f60a94fa066dc52ec76661e37c851cb232d92f9886b15cb560aaada2df8feb
+    # via
+    #   euporie
+    #   jupytext
+    #   mdit-py-plugins
+    #   rich
 markupsafe==3.0.3 \
     --hash=sha256:068f375c472b3e7acbe2d5318dea141359e6900156b5b2ba06a30b169086b91a \
     --hash=sha256:0bf2a864d67e76e5c9a34dc26ec616a66b9888e25e7b9460e1c76d3293bd9dbf \
@@ -1800,6 +1828,12 @@ matplotlib-inline==0.2.2 \
     # via
     #   ipykernel
     #   ipython
+mdit-py-plugins==0.4.2 \
+    --hash=sha256:0c673c3f889399a33b95e88d2f0d111b4447bdfea7f237dab2d488f459835636 \
+    --hash=sha256:5f2cd1fdb606ddf152d37ec30e46101a60512bc0e5fa1a7002c36647b09e26b5
+    # via
+    #   euporie
+    #   jupytext
 mdurl==0.1.2 \
     --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
     --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
@@ -2016,7 +2050,9 @@ nbformat==5.10.4 \
     --hash=sha256:322168b14f937a5d11362988ecac2a4952d3d8e3a2cbeb2319584631226d5b3a \
     --hash=sha256:3b48d6c8fbca4b299bf3982ea7db1af21580e4fec269ad087b9e81588891200b
     # via
+    #   euporie
     #   jupyter-server
+    #   jupytext
     #   nbclient
     #   nbconvert
 nemo-toolkit==2.3.0 \
@@ -2235,6 +2271,7 @@ packaging==24.2 \
     #   jupyter-server
     #   jupyterlab
     #   jupyterlab-server
+    #   jupytext
     #   lazy-loader
     #   lhotse
     #   lightning
@@ -2459,21 +2496,23 @@ pillow==12.2.0 \
     --hash=sha256:fb043ee2f06b41473269765c2feae53fc2e2fbf96e5e22ca94fb5ad677856f06 \
     --hash=sha256:fc3d34d4a8fbec3e88a79b92e5465e0f9b842b628675850d860b8bd300b159f5
     # via
+    #   euporie
     #   matplotlib
     #   mediapy
     #   tensorboard
+    #   timg
 plac==1.4.5 \
     --hash=sha256:5f05bf85235c017fcd76c73c8101d4ff8e96beb3dc58b9a37de49cac7de82d14 \
     --hash=sha256:87187786b4e446688b1cf5112e18fed8a23ab3b316c25fe91266a10bd1736b16
     # via texterrors
-platformdirs==4.9.6 \
-    --hash=sha256:3bfa75b0ad0db84096ae777218481852c0ebc6c727b3168c1b9e0118e458cf0a \
-    --hash=sha256:e61adb1d5e5cb3441b4b7710bea7e4c12250ca49439228cc1021c00dcfac0917
+platformdirs==3.11.0 \
+    --hash=sha256:cf8ee52a3afdb965072dcc652433e0c7e3e40cf5ea1477cd4b3b1d2eb75495b3 \
+    --hash=sha256:e9d171d00af68be50e9202731309c4e658fd8bc76f55c11c7dd760d023bda68e
     # via
     #   black
+    #   euporie
     #   jupyter-core
     #   pooch
-    #   python-discovery
     #   virtualenv
     #   wandb
 pooch==1.9.0 \
@@ -2495,6 +2534,7 @@ prompt-toolkit==3.0.52 \
     --hash=sha256:28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855 \
     --hash=sha256:9aac639a3bbd33284347de5ad8d68ecc044b91a762dc39b7c21095fcd6a19955
     # via
+    #   euporie
     #   ipython
     #   jupyter-console
     #   questionary
@@ -2830,6 +2870,7 @@ pygments==2.20.0 \
     --hash=sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f \
     --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
     # via
+    #   euporie
     #   ipython
     #   ipython-pygments-lexers
     #   jupyter-console
@@ -2843,6 +2884,14 @@ pyparsing==3.3.2 \
     --hash=sha256:850ba148bd908d7e2411587e247a1e4f0327839c40e2e5e6d05a007ecc69911d \
     --hash=sha256:c777f4d763f140633dcb6d8a3eda953bf7a214dc4eff598413c070bcdc117cbc
     # via matplotlib
+pyperclip==1.11.0 \
+    --hash=sha256:244035963e4428530d9e3a6101a1ef97209c6825edab1567beac148ccc1db1b6 \
+    --hash=sha256:299403e9ff44581cb9ba2ffeed69c7aa96a008622ad0c46cb575ca75b5b84273
+    # via euporie
+python-code-minimap==0.1.1 \
+    --hash=sha256:451cb6872ab81721b1a7882e0779f370122527a3463bf29175f962678c3d3025 \
+    --hash=sha256:74c8f12f9b8a9edd4ee8d41b0727191a099d618703c6fd5ffa4c833e4bb8445f
+    # via euporie
 python-dateutil==2.9.0.post0 \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
     --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
@@ -2852,9 +2901,9 @@ python-dateutil==2.9.0.post0 \
     #   matplotlib
     #   nemo-toolkit
     #   pandas
-python-discovery==1.3.0 \
-    --hash=sha256:441d9ced3dfce36e113beb35ca302c71c7ef06f3c0f9c227a0b9bb3bd49b9e9f \
-    --hash=sha256:d098f1e86be5d45fe4d14bf1029294aabbd332f4321179dec85e76cddce834b0
+python-discovery==1.9.5 \
+    --hash=sha256:86279f5d2728bc067de28b7ddc571be2eacc2ae0e7048f8629d2481a0f8848a2 \
+    --hash=sha256:a1fae8fca11e4bc61e38491c2aafff29e430b3c5e272d51ae52fb895bc4c0fac
     # via virtualenv
 python-json-logger==4.1.0 \
     --hash=sha256:132994765cf75bf44554be9aa49b06ef2345d23661a96720262716438141b6b2 \
@@ -2972,6 +3021,7 @@ pyyaml==6.0.3 \
     #   datasets
     #   huggingface-hub
     #   jupyter-events
+    #   jupytext
     #   lhotse
     #   libcst
     #   lightning
@@ -3243,6 +3293,7 @@ regex==2026.5.9 \
     --hash=sha256:ff8d372ac2acdc048d1c19916f27ee61bc5722728458ba6ca5052f2c72d51763
     # via
     #   epitran
+    #   flatlatex
     #   nltk
     #   panphon
     #   sacremoses
@@ -3664,6 +3715,10 @@ six==1.17.0 \
     # via
     #   python-dateutil
     #   rfc3339-validator
+sixelcrop==0.1.9 \
+    --hash=sha256:d6c05ac4fbd6e201f794aded12300fb427573172c0544a1fd25a48a66a5bc86f \
+    --hash=sha256:ed1648d040d480a41d7f76aa1fa19af4ba82caa895f6773eaadd32e04779dce1
+    # via euporie
 smmap==5.0.3 \
     --hash=sha256:4d9debb8b99007ae47165abc08670bd74cb74b5227dda7f643eccc4e9eb5642c \
     --hash=sha256:c106e05d5a61449cf6ba9a1e650227ecfb141590d2a98412103ff35d89fc7b2f
@@ -3819,6 +3874,10 @@ threadpoolctl==3.6.0 \
     --hash=sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb \
     --hash=sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e
     # via scikit-learn
+timg==1.1.6 \
+    --hash=sha256:5e981277c18a3aac8b1215fa354a085723296a9e1c701106187642b82f53cca4 \
+    --hash=sha256:938d939ac3502300f7b9e3daadf5da0f88c5b86fde5882d73b43a9d028bd4bfd
+    # via euporie
 tinycss2==1.4.0 \
     --hash=sha256:10c0972f6fc0fbee87c3edb76549357415e94548c1ae10ebccdea16fb404a9b7 \
     --hash=sha256:3a49cf47b7675da0b15d0c6e1df8df4ebd96e9394bb905a5775adb0d884c5289
@@ -4030,6 +4089,7 @@ typing-extensions==4.15.0 \
     #   alembic
     #   anyio
     #   beautifulsoup4
+    #   euporie
     #   fiddle
     #   grpcio
     #   huggingface-hub
@@ -4061,6 +4121,10 @@ tzdata==2026.2 \
 unicodecsv==0.14.1 \
     --hash=sha256:018c08037d48649a0412063ff4eda26eaa81eff1546dbffa51fa5293276ff7fc
     # via panphon
+universal-pathlib==0.2.6 \
+    --hash=sha256:50817aaeaa9f4163cb1e76f5bdf84207fa05ce728b23fd779479b3462e5430ac \
+    --hash=sha256:700dec2b58ef34b87998513de6d2ae153b22f083197dfafb8544744edabd1b18
+    # via euporie
 uri-template==1.3.0 \
     --hash=sha256:0e00f8eb65e18c7de20d595a14336e9f337ead580c70934141624b6d1ffdacc7 \
     --hash=sha256:a44a133ea12d44a0c0f06d7d42a52d71282e77e2f937d8abd5655b8d56fc1363
