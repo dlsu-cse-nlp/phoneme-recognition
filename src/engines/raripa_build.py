@@ -42,12 +42,12 @@ def build_model(
             param.requires_grad = True
     # """
 
-    # Freeze ByT5 decoder except for cross-attention and self-attention
+    # Freeze ByT5 decoder except for cross-attention, self-attention, and layer norms (LNA-style)
     for param in model.byt5.parameters():
         param.requires_grad = False
 
     for name, param in model.byt5.decoder.named_parameters():
-        if "EncDecAttention" in name or "SelfAttention" in name:
+        if "EncDecAttention" in name or "SelfAttention" in name or "layer_norm" in name:
             param.requires_grad = True
         else:
             param.requires_grad = False
