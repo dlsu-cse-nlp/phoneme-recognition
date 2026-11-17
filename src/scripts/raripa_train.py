@@ -118,7 +118,8 @@ training_args = Seq2SeqTrainingArguments(
     remove_unused_columns=False,
     # --------------------------------------------
     # TODO: Test these on COARE HPC
-    dataloader_num_workers=8,
+    # Originally 8 with 14 CPUs, reduced to 5 for 7
+    dataloader_num_workers=5,
     dataloader_pin_memory=True,
     dataloader_persistent_workers=True,
 )

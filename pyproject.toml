@@ -23,6 +23,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black>=26.1.0",
+    "euporie>=2.10.4",
     "isort>=7.0.0",
     "pre-commit>=4.5.1",
     "pre-commit-uv>=4.2.1",
