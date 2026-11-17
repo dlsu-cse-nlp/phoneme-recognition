@@ -52,7 +52,7 @@ def build_model(
         else:
             param.requires_grad = False
 
-    if mode in ("ctc-only", "combined", "m-adapter", "madapter"):
+    if mode in ("ctc-only", "combined"):
         for param in model.ctc_head.parameters():
             param.requires_grad = True
 

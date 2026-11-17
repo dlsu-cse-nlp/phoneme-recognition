@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from src.engines.raripa_combined import RARIPACombined
+from src.engines.raripa import RARIPA
 
 # Default mAda3 setting from the paper (Section 4.2.1):
 # 3 layers, each with k=3, s=2, p=1 (8x compression overall).
@@ -151,7 +151,7 @@ class MAdapter(nn.Module):
         return (x, lengths) if lengths is not None else x
 
 
-class RARIPAMAdapter(RARIPACombined):
+class RARIPAMAdapter(RARIPA):
     def __init__(
         self,
         num_layers=2,
