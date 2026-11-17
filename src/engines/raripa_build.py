@@ -6,13 +6,21 @@ from src.engines.raripa_ctc import RARIPACTC
 from src.engines.raripa_madapter import RARIPAMAdapter
 
 
-def build_model(checkpoint_path=None, mode="ce-only"):
+def build_model(
+    checkpoint_path=None,
+    mode="ce-only",
+    madapter_layers=2,
+    madapter_ffn_dim=1024,
+):
     if mode == "ctc-only":
         model = RARIPACTC()
     elif mode == "combined":
         model = RARIPACombined()
-    elif mode == "madapter":
-        model = RARIPAMAdapter()
+    elif mode in ("m-adapter", "madapter"):
+        model = RARIPAMAdapter(
+            num_layers=madapter_layers,
+            ffn_dim=madapter_ffn_dim,
+        )
     else:
         model = RARIPA()
 
@@ -44,7 +52,7 @@ def build_model(checkpoint_path=None, mode="ce-only"):
         else:
             param.requires_grad = False
 
-    if mode in ["ctc-only", "combined"]:
+    if mode in ("ctc-only", "combined", "m-adapter", "madapter"):
         for param in model.ctc_head.parameters():
             param.requires_grad = True
 

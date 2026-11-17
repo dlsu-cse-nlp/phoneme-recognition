@@ -18,6 +18,8 @@ parser.add_argument("--wav-path", required=True)
 parser.add_argument(
     "--mode", required=True, choices=["ce-only", "ctc-only", "combined", "m-adapter"]
 )
+parser.add_argument("--madapter-layers", type=int, default=2)
+parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
 parser.add_argument(
     "--layer",
     type=int,
@@ -35,7 +37,11 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 tokenizer = AutoTokenizer.from_pretrained(DEFAULT_MODEL_ID)
 
-model = build_model(mode=args.mode)
+model = build_model(
+    mode=args.mode,
+    madapter_layers=args.madapter_layers,
+    madapter_ffn_dim=args.madapter_ffn_dim,
+)
 model.load_state_dict(
     load_file(f"{args.checkpoint_path}/model.safetensors"), strict=False
 )

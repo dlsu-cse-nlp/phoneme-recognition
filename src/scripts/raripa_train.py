@@ -31,14 +31,28 @@ parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
 parser.add_argument("--ctc-checkpoint-path", default=None)
 parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
 parser.add_argument("--description", default=None)
+parser.add_argument("--madapter-layers", type=int, default=2)
+parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
+parser.add_argument("--epochs", type=int, default=60)
+parser.add_argument("--warmup-steps", type=int, default=200)
+parser.add_argument("--max-eval-samples", type=int, default=None)
 args = parser.parse_args()
 
 tokenizer = AutoTokenizer.from_pretrained(DEFAULT_MODEL_ID)
 
 if args.ctc_checkpoint_path is not None:
-    model = build_model(checkpoint_path=args.ctc_checkpoint_path, mode=args.mode)
+    model = build_model(
+        checkpoint_path=args.ctc_checkpoint_path,
+        mode=args.mode,
+        madapter_layers=args.madapter_layers,
+        madapter_ffn_dim=args.madapter_ffn_dim,
+    )
 else:
-    model = build_model(mode=args.mode)
+    model = build_model(
+        mode=args.mode,
+        madapter_layers=args.madapter_layers,
+        madapter_ffn_dim=args.madapter_ffn_dim,
+    )
 
 dataset = dataset_from_manifests(
     args.train_manifest_path,
@@ -81,16 +95,16 @@ training_args = Seq2SeqTrainingArguments(
     # --------------------------------------------
     # Effective batch size: 2 * 8 = 16 on 4060
     # 16 * 1 = 16 on COARE HPC (TODO: Test this)
-    per_device_train_batch_size=16,
-    gradient_accumulation_steps=1,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
     # --------------------------------------------
     # TODO: Hyperparameter tuning
     # learning_rate=1e-4,
     lr_scheduler_type="cosine",
-    warmup_steps=200,  # TODO: Use steps
+    warmup_steps=args.warmup_steps,
     max_grad_norm=1.0,
     # --------------------------------------------
-    num_train_epochs=60,
+    num_train_epochs=args.epochs,
     eval_strategy="epoch",
     save_strategy="epoch",
     save_total_limit=1,
@@ -112,11 +126,11 @@ training_args = Seq2SeqTrainingArguments(
 # TODO: Can use grouped parameters to control LR...?
 # """
 optimizer_grouped_parameters = [
-    {  # Bridge layers train with a higher LR (1e-3)
+    {  # Bridge layers train with a higher LR (1e-4 for M-Adapter, 3e-4 for linear/conv bridge)
         "params": [
             p for n, p in model.audio_proj.named_parameters() if p.requires_grad
         ],
-        "lr": 3e-4,
+        "lr": 1e-4 if args.mode == "m-adapter" else 3e-4,
     },
     {  # Rest of the unfrozen layers train with a lower LR (5e-5)
         "params": [
@@ -130,15 +144,19 @@ optimizer_grouped_parameters = [
 optimizer = torch.optim.AdamW(optimizer_grouped_parameters)
 # """
 
+eval_dataset = dataset["validation"]
+if args.max_eval_samples is not None and len(eval_dataset) > args.max_eval_samples:
+    eval_dataset = torch.utils.data.Subset(eval_dataset, range(args.max_eval_samples))
+
 trainer = Seq2SeqTrainer(
     optimizers=(optimizer, None),
     model=model,
     args=training_args,
     train_dataset=dataset["train"],
-    eval_dataset=dataset["validation"],
+    eval_dataset=eval_dataset,
     data_collator=data_collator,
     callbacks=(
-        [PreviewCallback(dataset["validation"], data_collator, tokenizer)]
+        [PreviewCallback(eval_dataset, data_collator, tokenizer)]
         if args.mode != "ctc-only"
         else None
     ),
