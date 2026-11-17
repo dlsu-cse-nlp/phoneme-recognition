@@ -1,5 +1,6 @@
 import re
 
+import numpy as np
 import pandas as pd
 import panphon
 import panphon.distance
@@ -52,7 +53,7 @@ class Metrics:
 
         per_dist = self.dst.levenshtein_distance(pred_segs, actual_segs)
 
-        if save:
+        if save and actual_segs:
             self.total_per_dist += per_dist
             self.total_per_segs += seg_len
 
@@ -66,7 +67,7 @@ class Metrics:
         pfer_dist = self.dst.feature_edit_distance(pred, actual)
         seg_len = len(actual_segs) if actual_segs else np.nan
 
-        if save:
+        if save and actual_segs:
             self.total_pfer_dist += pfer_dist
             self.total_pfer_segs += seg_len
 
@@ -81,7 +82,7 @@ class Metrics:
 
         sper_dist = self.dst.levenshtein_distance(pred_segs, actual_segs)
 
-        if save:
+        if save and actual_segs:
             self.total_sper_dist += sper_dist
             self.total_sper_segs += seg_len
 
