@@ -49,6 +49,11 @@ uv run --frozen python -m src.scripts.raripa_train \
   --valid-manifest-path "$VALID" \
   --test-manifest-path "$TEST" \
   ${CKPT:+--ctc-checkpoint-path "$CKPT"} \
-  ${RESUME:+--resume-from-checkpoint "$RESUME"}
+  ${RESUME:+--resume-from-checkpoint "$RESUME"} \
+  ${MADAPTER_LAYERS:+--madapter-layers "$MADAPTER_LAYERS"} \
+  ${MADAPTER_FFN_DIM:+--madapter-ffn-dim "$MADAPTER_FFN_DIM"} \
+  ${EPOCHS:+--epochs "$EPOCHS"} \
+  ${WARMUP_STEPS:+--warmup-steps "$WARMUP_STEPS"} \
+  ${MAX_EVAL_SAMPLES:+--max-eval-samples "$MAX_EVAL_SAMPLES"}
 
 echo "Finished: $(date)"
