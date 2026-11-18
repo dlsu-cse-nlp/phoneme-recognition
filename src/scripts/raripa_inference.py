@@ -16,7 +16,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--checkpoint-path", required=True)
 parser.add_argument("--wav-path", required=True)
 parser.add_argument(
-    "--mode", required=True, choices=["ce-only", "ctc-only", "combined", "m-adapter"]
+    "--mode",
+    required=True,
+    choices=[
+        "ce-only",
+        "ctc-only",
+        "combined",
+        "m-adapter",
+        "wav2vec2-ctc",
+        "xlsr-ctc",
+        "hubert-ctc",
+        "cnn-rnn-ctc",
+        "conformer-ctc",
+    ],
 )
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
@@ -67,7 +79,7 @@ with torch.no_grad():
         "-" * 40,
     )
 
-    if args.attention_map_output is not None:
+    if args.attention_map_output is not None and hasattr(model, "byt5"):
         # With beams, the attentions would be mixed across hypotheses
         projected, mask, *_ = model._get_projected(audio, attention_mask)
         outputs = model.byt5.generate(
@@ -78,7 +90,7 @@ with torch.no_grad():
             return_dict_in_generate=True,
         )
 
-if args.attention_map_output is not None:
+if args.attention_map_output is not None and hasattr(model, "byt5"):
     generated_ids = outputs.sequences[0]
     print(
         "Greedy decode used for attention plot:",

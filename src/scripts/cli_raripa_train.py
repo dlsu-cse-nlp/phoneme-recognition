@@ -39,7 +39,17 @@ if not valid_manifest:
 # Prompt user to select the validation manifest
 mode = questionary.select(
     "Select training mode:",
-    choices=["ce-only", "ctc-only", "combined", "m-adapter"],
+    choices=[
+        "ce-only",
+        "ctc-only",
+        "combined",
+        "m-adapter",
+        "wav2vec2-ctc",
+        "xlsr-ctc",
+        "hubert-ctc",
+        "cnn-rnn-ctc",
+        "conformer-ctc",
+    ],
     use_indicator=True,
 ).ask()
 

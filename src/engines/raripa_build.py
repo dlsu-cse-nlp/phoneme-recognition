@@ -4,6 +4,13 @@ from src.engines.raripa import RARIPA
 from src.engines.raripa_combined import RARIPACombined
 from src.engines.raripa_ctc import RARIPACTC
 from src.engines.raripa_madapter import RARIPAMAdapter
+from src.engines.rrl_baselines import CNNRNNCTCBaseline, ConformerCTCBaseline
+from src.engines.wav2vec2_ctc import (
+    HUBERT_HF,
+    WAV2VEC2_HF,
+    XLSR_HF,
+    Wav2Vec2CTCBaseline,
+)
 
 
 def build_model(
@@ -14,6 +21,16 @@ def build_model(
 ):
     if mode == "ctc-only":
         model = RARIPACTC()
+    elif mode == "wav2vec2-ctc":
+        model = Wav2Vec2CTCBaseline(encoder_id=WAV2VEC2_HF)
+    elif mode == "xlsr-ctc":
+        model = Wav2Vec2CTCBaseline(encoder_id=XLSR_HF)
+    elif mode == "hubert-ctc":
+        model = Wav2Vec2CTCBaseline(encoder_id=HUBERT_HF)
+    elif mode == "cnn-rnn-ctc":
+        model = CNNRNNCTCBaseline()
+    elif mode == "conformer-ctc":
+        model = ConformerCTCBaseline()
     elif mode == "combined":
         model = RARIPACombined()
     elif mode in ("m-adapter", "madapter"):
@@ -32,27 +49,27 @@ def build_model(
 
     # TODO: Investigate selective freezing more
 
-    # Freeze wav2vec2 encoder except for top 6 layers
-    for param in model.encoder.parameters():
-        param.requires_grad = False
-
-    # """
-    for layer in model.encoder.encoder.layers[-6:]:
-        for param in layer.parameters():
-            param.requires_grad = True
-    # """
-
-    # Freeze ByT5 decoder except for cross-attention and self-attention
-    for param in model.byt5.parameters():
-        param.requires_grad = False
-
-    for name, param in model.byt5.decoder.named_parameters():
-        if "EncDecAttention" in name or "SelfAttention" in name:
-            param.requires_grad = True
-        else:
+    # Freeze pretrained speech encoder except for top 6 layers
+    if hasattr(model, "encoder"):
+        for param in model.encoder.parameters():
             param.requires_grad = False
 
-    if mode in ("ctc-only", "combined", "m-adapter", "madapter"):
+        for layer in model.encoder.encoder.layers[-6:]:
+            for param in layer.parameters():
+                param.requires_grad = True
+
+    # Freeze ByT5 decoder except for cross-attention and self-attention
+    if hasattr(model, "byt5"):
+        for param in model.byt5.parameters():
+            param.requires_grad = False
+
+        for name, param in model.byt5.decoder.named_parameters():
+            if "EncDecAttention" in name or "SelfAttention" in name:
+                param.requires_grad = True
+            else:
+                param.requires_grad = False
+
+    if hasattr(model, "ctc_head"):
         for param in model.ctc_head.parameters():
             param.requires_grad = True
 

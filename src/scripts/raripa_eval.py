@@ -22,7 +22,20 @@ BATCH_SIZE = 8
 parser = argparse.ArgumentParser()
 parser.add_argument("--checkpoint-path", default=TEST_MANIFEST)
 parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
-parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
+parser.add_argument(
+    "--mode",
+    choices=[
+        "ce-only",
+        "ctc-only",
+        "combined",
+        "m-adapter",
+        "wav2vec2-ctc",
+        "xlsr-ctc",
+        "hubert-ctc",
+        "cnn-rnn-ctc",
+        "conformer-ctc",
+    ],
+)
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
 args = parser.parse_args()

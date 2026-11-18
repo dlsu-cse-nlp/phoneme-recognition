@@ -23,13 +23,25 @@ TEST_MANIFEST = "data/nexdata/filipino_822/test_manifest.json"
 
 DEFAULT_MODEL_ID = "charsiu/g2p_multilingual_byT5_small_100"
 
+MODE_CHOICES = [
+    "ce-only",
+    "ctc-only",
+    "combined",
+    "m-adapter",
+    "wav2vec2-ctc",
+    "xlsr-ctc",
+    "hubert-ctc",
+    "cnn-rnn-ctc",
+    "conformer-ctc",
+]
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--model-id", default=DEFAULT_MODEL_ID)
 parser.add_argument("--train-manifest-path", default=TRAIN_MANIFEST)
 parser.add_argument("--valid-manifest-path", default=VALID_MANIFEST)
 parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
 parser.add_argument("--ctc-checkpoint-path", default=None)
-parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
+parser.add_argument("--mode", choices=MODE_CHOICES)
 parser.add_argument("--description", default=None)
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
@@ -126,22 +138,45 @@ training_args = Seq2SeqTrainingArguments(
 
 # TODO: Can use grouped parameters to control LR...?
 # """
-optimizer_grouped_parameters = [
-    {  # Bridge layers train with a higher LR (1e-4 for M-Adapter, 3e-4 for linear/conv bridge)
-        "params": [
-            p for n, p in model.audio_proj.named_parameters() if p.requires_grad
-        ],
-        "lr": 1e-4 if args.mode == "m-adapter" else 3e-4,
-    },
-    {  # Rest of the unfrozen layers train with a lower LR (5e-5)
-        "params": [
-            p
-            for n, p in model.named_parameters()
-            if p.requires_grad and "audio_proj" not in n
-        ],
-        "lr": 5e-5,
-    },
-]
+if args.mode in ("wav2vec2-ctc", "xlsr-ctc", "hubert-ctc"):
+    optimizer_grouped_parameters = [
+        {  # Newly initialized CTC head trains with a higher LR (3e-4)
+            "params": [p for p in model.ctc_head.parameters() if p.requires_grad],
+            "lr": 3e-4,
+        },
+        {  # Unfrozen encoder layers train with a lower LR (5e-5)
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if p.requires_grad and "ctc_head" not in n
+            ],
+            "lr": 5e-5,
+        },
+    ]
+elif args.mode in ("cnn-rnn-ctc", "conformer-ctc"):
+    optimizer_grouped_parameters = [
+        {  # Non-pretrained scratch baselines train all parameters at 3e-4
+            "params": [p for p in model.parameters() if p.requires_grad],
+            "lr": 3e-4,
+        }
+    ]
+else:
+    optimizer_grouped_parameters = [
+        {  # Bridge layers train with a higher LR (1e-4 for M-Adapter, 3e-4 for linear/conv bridge)
+            "params": [
+                p for n, p in model.audio_proj.named_parameters() if p.requires_grad
+            ],
+            "lr": 1e-4 if args.mode == "m-adapter" else 3e-4,
+        },
+        {  # Rest of the unfrozen layers train with a lower LR (5e-5)
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if p.requires_grad and "audio_proj" not in n
+            ],
+            "lr": 5e-5,
+        },
+    ]
 optimizer = torch.optim.AdamW(optimizer_grouped_parameters)
 # """
 

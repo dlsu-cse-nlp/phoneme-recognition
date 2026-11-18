@@ -26,7 +26,17 @@ if not selected_checkpoint:
 # Prompt user to select a mode
 selected_mode = questionary.select(
     "Choose a mode:",
-    choices=["ce-only", "ctc-only", "combined", "m-adapter"],
+    choices=[
+        "ce-only",
+        "ctc-only",
+        "combined",
+        "m-adapter",
+        "wav2vec2-ctc",
+        "xlsr-ctc",
+        "hubert-ctc",
+        "cnn-rnn-ctc",
+        "conformer-ctc",
+    ],
     use_indicator=True,
 ).ask()
 
