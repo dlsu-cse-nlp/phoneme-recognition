@@ -71,7 +71,13 @@ def write_textgrid(output_path, result, sampling_rate=16000):
 
 
 def diagnose(
-    model, tokenizer, feature_extractor, audio_path, expected_text, delimiter=" "
+    model,
+    tokenizer,
+    feature_extractor,
+    audio_path,
+    expected_text,
+    delimiter=" ",
+    use_speech_mask=True,
 ):
     waveform = load_audio(audio_path, target_sr=feature_extractor.sampling_rate)
     audio_inputs = feature_extractor(
@@ -93,6 +99,7 @@ def diagnose(
         audio_attention_mask=audio_attention_mask,
         delimiter=delimiter,
         sampling_rate=feature_extractor.sampling_rate,
+        use_speech_mask=use_speech_mask,
     )
 
 
@@ -109,6 +116,8 @@ if __name__ == "__main__":
     )
     print(f"Expected pronunciation   : {result['expected_pronunciation']}")
     print(f"Recognized pronunciation : {result['recognized_text']}")
+    masked = result["speech_mask"].count(False)
+    print(f"Frames masked as non-speech: {masked} / {len(result['speech_mask'])}")
     write_textgrid(
         "data/textgrids/my_custom_audio.TextGrid",
         result,

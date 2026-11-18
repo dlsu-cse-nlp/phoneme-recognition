@@ -7,6 +7,7 @@ from transformers.modeling_outputs import BaseModelOutput
 from src.engines.fusion import CONV_DOWNSAMPLE_FACTOR
 from src.engines.raripa_combined import RARIPACombined
 from src.utils.mdd_diagnosis import align_phonemes, unit_index_per_byte
+from src.utils.speech_mask import speech_mask
 
 
 class MDDModel(nn.Module):
@@ -40,8 +41,14 @@ class MDDModel(nn.Module):
         audio_attention_mask=None,
         delimiter=" ",
         sampling_rate=16000,
+        use_speech_mask=True,
+        speech_mask_kwargs=None,
     ):
         """
+        use_speech_mask: if True, frames judged non-speech by an energy threshold
+            (see src.utils.speech_mask) are reported as silence instead of being
+            assigned to a phoneme by the attention argmax. Fixes "hallucinated"
+            phonemes at the start/end of recordings.
         audio_values: pre-extracted wav2vec2 input (see Wav2Vec2FeatureExtractor
             in test_mdd.py), shape (1, samples). Batch size 1 only.
         tokenizer: the ByT5 tokenizer shared by KoToNe's byt5 decoder and
@@ -115,8 +122,29 @@ class MDDModel(nn.Module):
         )
         unit_of_byte = unit_index_per_byte(content_ids, delimiter_id)
 
+        # Energy-based speech/non-speech gate on the same 40 ms frame grid
+        if use_speech_mask:
+            n_samples = int(audio_attention_mask[0].sum().item())
+            speech = speech_mask(
+                audio_values[0, :n_samples].float().cpu().numpy(),
+                n_frames,
+                **(speech_mask_kwargs or {}),
+            )
+        else:
+            speech = [True] * n_frames
+
         frame_reports = []
         for t in range(n_frames):
+            if not speech[t]:
+                frame_reports.append(
+                    {
+                        "frame": t,
+                        "expected": None,
+                        "actual": None,
+                        "mispronounced": False,
+                    }
+                )
+                continue
             pos = int(frame_to_content_pos[t])
             unit_idx = unit_of_byte[pos] if pos < len(unit_of_byte) else None
             if unit_idx is not None and unit_idx < len(unit_events):
@@ -152,4 +180,5 @@ class MDDModel(nn.Module):
             "frame_reports": frame_reports,
             "frame_duration": frame_duration,
             "total_duration": total_duration,
+            "speech_mask": [bool(x) for x in speech],
         }
