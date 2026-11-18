@@ -54,6 +54,7 @@ uv run --frozen python -m src.scripts.raripa_train \
   ${MADAPTER_FFN_DIM:+--madapter-ffn-dim "$MADAPTER_FFN_DIM"} \
   ${EPOCHS:+--epochs "$EPOCHS"} \
   ${WARMUP_STEPS:+--warmup-steps "$WARMUP_STEPS"} \
-  ${MAX_EVAL_SAMPLES:+--max-eval-samples "$MAX_EVAL_SAMPLES"}
+  ${MAX_EVAL_SAMPLES:+--max-eval-samples "$MAX_EVAL_SAMPLES"} \
+  ${NO_MPSA:+--no-mpsa}
 
 echo "Finished: $(date)"
