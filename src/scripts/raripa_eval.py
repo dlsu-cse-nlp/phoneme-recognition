@@ -25,6 +25,7 @@ parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
 parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
+parser.add_argument("--no-mpsa", action="store_true")
 args = parser.parse_args()
 
 os.makedirs("results", exist_ok=True)
@@ -36,6 +37,7 @@ model = build_model(
     mode=args.mode,
     madapter_layers=args.madapter_layers,
     madapter_ffn_dim=args.madapter_ffn_dim,
+    madapter_use_mpsa=not args.no_mpsa,
 )
 model.load_state_dict(
     load_file(f"{args.checkpoint_path}/model.safetensors"), strict=False

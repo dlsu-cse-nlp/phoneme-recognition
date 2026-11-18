@@ -11,6 +11,7 @@ def build_model(
     mode="ce-only",
     madapter_layers=2,
     madapter_ffn_dim=1024,
+    madapter_use_mpsa=True,
 ):
     if mode == "ctc-only":
         model = RARIPACTC()
@@ -20,6 +21,7 @@ def build_model(
         model = RARIPAMAdapter(
             num_layers=madapter_layers,
             ffn_dim=madapter_ffn_dim,
+            use_mpsa=madapter_use_mpsa,
         )
     else:
         model = RARIPA()

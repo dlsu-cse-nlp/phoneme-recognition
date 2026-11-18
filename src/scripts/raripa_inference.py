@@ -20,6 +20,7 @@ parser.add_argument(
 )
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
+parser.add_argument("--no-mpsa", action="store_true")
 parser.add_argument(
     "--layer",
     type=int,
@@ -41,6 +42,7 @@ model = build_model(
     mode=args.mode,
     madapter_layers=args.madapter_layers,
     madapter_ffn_dim=args.madapter_ffn_dim,
+    madapter_use_mpsa=not args.no_mpsa,
 )
 model.load_state_dict(
     load_file(f"{args.checkpoint_path}/model.safetensors"), strict=False

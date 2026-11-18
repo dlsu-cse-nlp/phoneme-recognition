@@ -33,6 +33,7 @@ parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-ada
 parser.add_argument("--description", default=None)
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
+parser.add_argument("--no-mpsa", action="store_true")
 parser.add_argument("--epochs", type=int, default=60)
 parser.add_argument("--warmup-steps", type=int, default=200)
 parser.add_argument("--max-eval-samples", type=int, default=None)
@@ -46,12 +47,14 @@ if args.ctc_checkpoint_path is not None:
         mode=args.mode,
         madapter_layers=args.madapter_layers,
         madapter_ffn_dim=args.madapter_ffn_dim,
+        madapter_use_mpsa=not args.no_mpsa,
     )
 else:
     model = build_model(
         mode=args.mode,
         madapter_layers=args.madapter_layers,
         madapter_ffn_dim=args.madapter_ffn_dim,
+        madapter_use_mpsa=not args.no_mpsa,
     )
 
 dataset = dataset_from_manifests(

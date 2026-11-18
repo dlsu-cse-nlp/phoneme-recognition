@@ -40,18 +40,22 @@ class MAdapterLayer(nn.Module):
         stride=STRIDE,
         padding=PADDING,
         dropout=0.1,
+        use_mpsa=True,
     ):
         super().__init__()
         self.heads = heads
         self.kernel = kernel
         self.stride = stride
         self.padding = padding
+        self.use_mpsa = use_mpsa
 
-        self.qkv = nn.Linear(dim, 3 * dim)
-        self.pool_q, self.pool_k, self.pool_v, self.pool_x = (
-            nn.Conv1d(dim, dim, kernel, stride, padding) for _ in range(4)
-        )
-        self.out = nn.Linear(dim, dim)
+        self.pool_x = nn.Conv1d(dim, dim, kernel, stride, padding)
+        if use_mpsa:
+            self.qkv = nn.Linear(dim, 3 * dim)
+            self.pool_q, self.pool_k, self.pool_v = (
+                nn.Conv1d(dim, dim, kernel, stride, padding) for _ in range(3)
+            )
+            self.out = nn.Linear(dim, dim)
         self.dropout = nn.Dropout(dropout)
         self.norm1 = nn.LayerNorm(dim)
         self.norm2 = nn.LayerNorm(dim)
@@ -70,30 +74,40 @@ class MAdapterLayer(nn.Module):
             x = x * pad_mask.unsqueeze(-1).to(x.dtype)
 
         pool = lambda conv, t: conv(t.transpose(1, 2)).transpose(1, 2)
-        pools = (self.pool_q, self.pool_k, self.pool_v)
-        q, k, v = (pool(p, t) for p, t in zip(pools, self.qkv(x).chunk(3, dim=-1)))
         x_pooled = pool(self.pool_x, x)
 
-        attn_mask = None
         if lengths is not None:
             lengths = (lengths + 2 * self.padding - self.kernel) // self.stride + 1
             lengths = lengths.clamp(min=0, max=x_pooled.size(1))
-            positions = torch.arange(x_pooled.size(1), device=x.device)
-            # Clamp to min=1 for attention mask so fully empty rows don't produce NaN in softmax
-            valid_lengths = lengths.clamp(min=1)
-            attn_mask = (positions[None, :] < valid_lengths[:, None])[:, None, None, :]
 
-        q, k, v = (t.unflatten(-1, (self.heads, -1)).transpose(1, 2) for t in (q, k, v))
-        h = F.scaled_dot_product_attention(
-            q,
-            k,
-            v,
-            attn_mask=attn_mask,
-            dropout_p=self.dropout.p if self.training else 0.0,
-        )
-        h = h.transpose(1, 2).flatten(2)
+        if self.use_mpsa:
+            pools = (self.pool_q, self.pool_k, self.pool_v)
+            q, k, v = (pool(p, t) for p, t in zip(pools, self.qkv(x).chunk(3, dim=-1)))
 
-        x = self.norm1(x_pooled + self.dropout(self.out(h)))
+            attn_mask = None
+            if lengths is not None:
+                positions = torch.arange(x_pooled.size(1), device=x.device)
+                # Clamp to min=1 for attention mask so fully empty rows don't produce NaN in softmax
+                valid_lengths = lengths.clamp(min=1)
+                attn_mask = (positions[None, :] < valid_lengths[:, None])[
+                    :, None, None, :
+                ]
+
+            q, k, v = (
+                t.unflatten(-1, (self.heads, -1)).transpose(1, 2) for t in (q, k, v)
+            )
+            h = F.scaled_dot_product_attention(
+                q,
+                k,
+                v,
+                attn_mask=attn_mask,
+                dropout_p=self.dropout.p if self.training else 0.0,
+            )
+            h = h.transpose(1, 2).flatten(2)
+            x = self.norm1(x_pooled + self.dropout(self.out(h)))
+        else:
+            x = self.norm1(x_pooled)
+
         x = self.norm2(x + self.ffn(x))
         return (x, lengths) if lengths is not None else x
 
@@ -116,6 +130,7 @@ class MAdapter(nn.Module):
         stride=STRIDE,
         padding=PADDING,
         dropout=0.1,
+        use_mpsa=True,
     ):
         super().__init__()
         self.lit_adapter = LitAdapter(in_dim, in_dim, dropout=dropout)
@@ -129,6 +144,7 @@ class MAdapter(nn.Module):
                     stride=stride,
                     padding=padding,
                     dropout=dropout,
+                    use_mpsa=use_mpsa,
                 )
                 for _ in range(num_layers)
             ]
@@ -160,6 +176,7 @@ class RARIPAMAdapter(RARIPACombined):
         stride=STRIDE,
         padding=PADDING,
         dropout=0.1,
+        use_mpsa=True,
     ):
         super().__init__()
         self.num_layers = num_layers
@@ -172,6 +189,7 @@ class RARIPAMAdapter(RARIPACombined):
             stride=stride,
             padding=padding,
             dropout=dropout,
+            use_mpsa=use_mpsa,
         )
 
     def _get_projected(self, audio_values, attention_mask=None):
