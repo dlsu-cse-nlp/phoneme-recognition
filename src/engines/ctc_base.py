@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import GenerationConfig
+from transformers import GenerationConfig, PretrainedConfig
 from transformers.modeling_outputs import Seq2SeqLMOutput
 
 
@@ -22,6 +22,13 @@ class BaseCTCModel(nn.Module):
         self.pad_token_id = pad_token_id
         self.eos_token_id = eos_token_id
         self.blank_id = vocab_size
+
+        self.config = PretrainedConfig(
+            vocab_size=vocab_size,
+            pad_token_id=pad_token_id,
+            eos_token_id=eos_token_id,
+            hidden_size=hidden_size,
+        )
 
         self.generation_config = GenerationConfig(
             max_length=500,
