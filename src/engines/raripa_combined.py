@@ -98,15 +98,25 @@ class RARIPACombined(RARIPA):
             starts_with_pad = targets[:, 0] == self.config.pad_token_id
             targets = targets[:, 1:]
 
-        target_lengths = (targets != self.config.pad_token_id).sum(dim=-1).clamp(min=1)
+        # ByT5.generate() pads finished sequences after the first eos_token_id (1)
+        # with additional eos_token_id (1) tokens rather than pad_token_id (0).
+        # Count only content tokens plus at most one eos_token_id (matching training).
+        content_lengths = (
+            (targets != self.config.pad_token_id)
+            & (targets != self.config.eos_token_id)
+        ).sum(dim=-1)
+        has_eos = (targets == self.config.eos_token_id).any(dim=-1).long()
+        target_lengths = (content_lengths + has_eos).clamp(min=1, max=targets.size(1))
 
+        # Keep zero_infinity=False at inference so impossible alignments stay +inf NLL
+        # (penalized as -1e9 log-prob) instead of being zeroed to 0.0 (100% prob).
         per_hyp_ctc_nll = F.ctc_loss(
             log_probs,
             targets,
             input_lengths=input_lengths,
             target_lengths=target_lengths,
             blank=self.config.vocab_size,
-            zero_infinity=True,
+            zero_infinity=False,
             reduction="none",
         )  # (B*num_return,) lower = better
 
@@ -122,14 +132,17 @@ class RARIPACombined(RARIPA):
 
         unnormalized_attn_log_probs = attn_scores * lengths_pow
 
-        ctc_log_probs = -per_hyp_ctc_nll
+        ctc_log_probs = torch.where(
+            torch.isinf(per_hyp_ctc_nll),
+            torch.full_like(per_hyp_ctc_nll, -1e9),
+            -per_hyp_ctc_nll,
+        )
 
-        combined_unnormalized = (
-            1 - ctc_weight
-        ) * unnormalized_attn_log_probs + ctc_weight * ctc_log_probs
-
-        # TODO: Normalize by length?
-        combined_scores = combined_unnormalized
+        # Length-normalize both log-probs per target token before combining
+        tgt_len_f = target_lengths.float()
+        combined_scores = (1 - ctc_weight) * (
+            unnormalized_attn_log_probs / tgt_len_f
+        ) + ctc_weight * (ctc_log_probs / tgt_len_f)
 
         combined_scores = combined_scores.view(batch_size, num_return)
         best_idx = combined_scores.argmax(dim=-1)
