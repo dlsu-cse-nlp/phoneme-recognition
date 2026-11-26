@@ -9,6 +9,7 @@ data/**/*
 models/
 nemo_experiments/
 evaluation_transcripts.json
+.docs/
 
 # ==============================================================================
 # Python .gitignore template from:
