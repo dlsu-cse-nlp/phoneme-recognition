@@ -25,6 +25,7 @@ parser.add_argument("--test-manifest-path", default=TEST_MANIFEST)
 parser.add_argument("--mode", choices=["ce-only", "ctc-only", "combined", "m-adapter"])
 parser.add_argument("--madapter-layers", type=int, default=2)
 parser.add_argument("--madapter-ffn-dim", type=int, default=1024)
+parser.add_argument("--output-path", default=None)
 args = parser.parse_args()
 
 os.makedirs("results", exist_ok=True)
@@ -86,9 +87,10 @@ print("Per-sample error statistics")
 print("-" * 40)
 print(df[["per", "pfer", "sper"]].describe())
 
-pkl_path = (
+pkl_path = args.output_path or (
     f"results/output_{Path(args.checkpoint_path).parts[-2]}"
     f"_{Path(args.checkpoint_path).parts[-1]}.pkl"
 )
+os.makedirs(Path(pkl_path).parent, exist_ok=True)
 df.to_pickle(pkl_path)
 print(f"Per-sample results saved to {pkl_path}")
