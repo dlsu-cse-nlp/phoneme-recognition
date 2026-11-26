@@ -126,7 +126,8 @@ rsync -avhP models/g2p/         $D/models/g2p/
 ```
 
 The repository clone on HPC only has Git LFS pointers to the manifest files, so
-also `rsync` those from your machine:
+also `rsync` those from your machine (or see the [Git LFS installation](#installing-git-lfs-on-an-hpc-compute-node)
+section below):
 
 ```bash
 rsync -avhP data/fleurs/*_manifest.json $D/data/fleurs/
@@ -161,6 +162,41 @@ Call `exit` twice to leave the `srun` shell and to release the `salloc`.
 > [!NOTE]
 > You will need to run the environmment variable `export`s every time you login
 > to a new interactive session.
+
+### Installing Git LFS on an HPC compute node
+
+Git LFS is not installed by default on COARE and compute node users lack `sudo`
+privileges. You can install it locally to `~/bin` by downloading the release
+tarball and executing its bundled `install.sh` with `PREFIX=$HOME`:
+
+```bash
+salloc --partition=debug --qos=debug_default --nodes=1 --ntasks=4 --time=01:00:00
+srun --pty /bin/bash
+
+# Download and extract the Git LFS release archive
+curl -sLO https://github.com/git-lfs/git-lfs/releases/download/v3.6.0/git-lfs-linux-amd64-v3.6.0.tar.gz
+tar -xzf git-lfs-linux-amd64-v3.6.0.tar.gz
+cd git-lfs-3.6.0
+
+# Install binary to ~/bin and configure git hooks
+PREFIX=$HOME ./install.sh
+export PATH=$HOME/bin:$PATH
+git lfs install
+```
+
+Once installed, you can pull LFS-tracked files (such as dataset manifests)
+directly on HPC instead of needing to rsync them:
+
+```bash
+cd ~/scratch1/phoneme-recognition
+git lfs pull
+```
+
+Call `exit` twice to leave the `srun` shell and to release the `salloc`.
+
+> [!NOTE]
+> Add `export PATH=$HOME/bin:$PATH` to your `~/.bashrc` so that `git-lfs`
+> remains in your `PATH` across all future sessions.
 
 ### Submitting SLURM jobs for training
 
